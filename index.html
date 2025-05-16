@@ -4,170 +4,647 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Ask iBPS Helper</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
   <style>
+    :root {
+      --primary: #4A6FFF;
+      --secondary: #6C63FF;
+      --dark: #121212;
+      --darker: #0a0a0a;
+      --light-bg: #1e1e1e;
+      --light-text: #f0f0f0;
+      --accent: #FF7A90;
+      --accent-light: #FF9FB1;
+      --border-radius: 12px;
+      --transition: all 0.3s ease;
+    }
+    
+    * {
+      box-sizing: border-box;
+      transition: var(--transition);
+    }
+    
     body {
-      background-color: #121212;
-      color: #f0f0f0;
-      font-family: 'Segoe UI', sans-serif;
+      background-color: var(--dark);
+      color: var(--light-text);
+      font-family: 'Inter', 'Segoe UI', sans-serif;
       margin: 0;
       padding: 0;
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
     }
+    
     header {
-      background-color: #1e1e1e;
-      padding: 1rem;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      padding: 1.5rem;
       text-align: center;
-      font-size: 1.8rem;
-      font-weight: bold;
-      color: #80d8ff;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      position: relative;
+      overflow: hidden;
     }
+    
+    header::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+      animation: pulse 15s infinite;
+    }
+    
+    @keyframes pulse {
+      0% { transform: translate(0, 0) scale(1); opacity: 0.5; }
+      50% { transform: translate(10%, 10%) scale(1.1); opacity: 0.7; }
+      100% { transform: translate(0, 0) scale(1); opacity: 0.5; }
+    }
+    
+    .logo {
+      font-size: 2.2rem;
+      font-weight: bold;
+      color: white;
+      margin: 0;
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+      position: relative;
+      z-index: 1;
+    }
+    
     .copyright {
       text-align: center;
-      color: #aaa;
+      color: rgba(255, 255, 255, 0.8);
       font-size: 0.9rem;
-      margin-top: 0.25rem;
+      margin-top: 0.5rem;
+      position: relative;
+      z-index: 1;
     }
-    .container {
-      max-width: 800px;
-      margin: 2rem auto;
-      padding: 1rem;
-    }
-    .description {
-      font-size: 1rem;
-      color: #ccc;
-      margin-bottom: 1rem;
-    }
-    .chat-box {
-      background-color: #1e1e1e;
-      border-radius: 8px;
-      padding: 1rem;
-      height: 400px;
-      overflow-y: auto;
-      margin-bottom: 1rem;
-    }
-    .chat-entry {
-      margin: 0.5rem 0;
-    }
-    .chat-entry.user { color: #80cbc4; }
-    .chat-entry.bot { color: #b39ddb; white-space: pre-wrap; }
-    .chat-entry.bot strong { font-weight: bold; }
-    .typing { color: #888; font-style: italic; }
-    .input-container {
+    
+    main {
+      flex: 1;
       display: flex;
-      gap: 0.5rem;
+      flex-direction: column;
+      max-width: 1200px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 2rem 1rem;
     }
+    
+    .description {
+      text-align: center;
+      max-width: 800px;
+      margin: 0 auto 2rem;
+      padding: 1.5rem;
+      background-color: var(--light-bg);
+      border-radius: var(--border-radius);
+      border-left: 4px solid var(--primary);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      font-size: 1rem;
+      line-height: 1.6;
+    }
+    
+    .chat-container {
+      display: grid;
+      grid-template-columns: 1fr 280px;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    
+    @media (max-width: 900px) {
+      .chat-container {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    .chat-box {
+      background-color: var(--light-bg);
+      border-radius: var(--border-radius);
+      padding: 1.5rem;
+      height: 500px;
+      overflow-y: auto;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      scroll-behavior: smooth;
+    }
+    
+    .chat-entry {
+      margin: 0.8rem 0;
+      padding: 0.8rem 1rem;
+      border-radius: var(--border-radius);
+      animation: fadeIn 0.5s ease;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .chat-entry.user {
+      background-color: rgba(74, 111, 255, 0.15);
+      color: #b0c4ff;
+      border-left: 3px solid var(--primary);
+      margin-left: 1rem;
+      margin-right: 2rem;
+    }
+    
+    .chat-entry.bot {
+      background-color: rgba(108, 99, 255, 0.15);
+      color: #c4c0ff;
+      border-left: 3px solid var(--secondary);
+      margin-right: 1rem;
+      margin-left: 2rem;
+      white-space: pre-wrap;
+    }
+    
+    .chat-entry strong {
+      font-weight: bold;
+      opacity: 0.9;
+    }
+    
+    .typing {
+      color: #888;
+      font-style: italic;
+      display: flex;
+      align-items: center;
+    }
+    
+    .typing-animation::after {
+      content: '';
+      width: 5px;
+      height: 5px;
+      background-color: #888;
+      border-radius: 50%;
+      display: inline-block;
+      margin-left: 4px;
+      animation: typing 1.4s infinite;
+    }
+    
+    .typing-animation::before {
+      content: '';
+      width: 5px;
+      height: 5px;
+      background-color: #888;
+      border-radius: 50%;
+      display: inline-block;
+      margin-right: 4px;
+      animation: typing 1.4s infinite 0.2s;
+    }
+    
+    @keyframes typing {
+      0% { opacity: 0.3; transform: translateY(0); }
+      50% { opacity: 1; transform: translateY(-5px); }
+      100% { opacity: 0.3; transform: translateY(0); }
+    }
+    
+    .reference {
+      background-color: var(--light-bg);
+      padding: 1.5rem;
+      border-radius: var(--border-radius);
+      max-height: 500px;
+      overflow-y: auto;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      border-top: 4px solid var(--accent);
+    }
+    
+    .reference strong {
+      color: var(--accent);
+      font-size: 1.1rem;
+      display: block;
+      margin-bottom: 0.8rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      padding-bottom: 0.5rem;
+    }
+    
+    .reference ul {
+      padding-left: 1.2rem;
+      margin: 0;
+    }
+    
+    .reference li {
+      margin: 0.5rem 0;
+      transition: var(--transition);
+      position: relative;
+      padding-left: 0.5rem;
+    }
+    
+    .reference li:hover {
+      color: var(--accent-light);
+      transform: translateX(3px);
+    }
+    
+    .reference li::before {
+      content: "";
+      position: absolute;
+      left: -1rem;
+      top: 0.6rem;
+      width: 6px;
+      height: 6px;
+      background-color: var(--accent);
+      border-radius: 50%;
+    }
+    
+    .controls {
+      background-color: var(--light-bg);
+      border-radius: var(--border-radius);
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+    
+    .mode-selector {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1.5rem;
+    }
+    
+    .mode-selector label {
+      margin-right: 1rem;
+      font-weight: 500;
+    }
+    
+    .mode-selector select {
+      padding: 0.6rem 1rem;
+      border-radius: var(--border-radius);
+      background-color: rgba(255, 255, 255, 0.05);
+      color: white;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      outline: none;
+      font-size: 0.9rem;
+      cursor: pointer;
+    }
+    
+    .mode-selector select:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px rgba(74, 111, 255, 0.2);
+    }
+    
+    .input-container {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+    
     .input-container input {
       flex-grow: 1;
-      padding: 0.5rem;
+      padding: 1rem 1.2rem;
       border: none;
-      border-radius: 4px;
-      background-color: #2e2e2e;
+      border-radius: var(--border-radius);
+      background-color: rgba(255, 255, 255, 0.05);
       color: white;
+      font-size: 1rem;
+      outline: none;
+      box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      transition: var(--transition);
     }
+    
+    .input-container input:focus {
+      background-color: rgba(255, 255, 255, 0.08);
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px rgba(74, 111, 255, 0.3);
+    }
+    
     .input-container button {
-      padding: 0.5rem 1rem;
+      padding: 1rem 1.8rem;
       border: none;
-      border-radius: 4px;
-      background-color: #80d8ff;
-      color: black;
+      border-radius: var(--border-radius);
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white;
+      font-weight: 600;
       cursor: pointer;
+      box-shadow: 0 4px 12px rgba(74, 111, 255, 0.3);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
+    
+    .input-container button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 15px rgba(74, 111, 255, 0.4);
+    }
+    
+    .input-container button:active {
+      transform: translateY(1px);
+      box-shadow: 0 2px 8px rgba(74, 111, 255, 0.3);
+    }
+    
+    .input-container button i {
+      font-size: 0.9rem;
+    }
+    
     .quick-ask {
-      margin-top: 1rem;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.6rem;
+      margin: 1.5rem 0;
     }
+    
     .quick-ask span {
-      display: inline-block;
-      background-color: #2e2e2e;
-      color: #80d8ff;
-      padding: 0.3rem 0.6rem;
-      margin: 0.2rem;
-      border-radius: 4px;
+      background-color: rgba(255, 255, 255, 0.05);
+      color: var(--primary);
+      padding: 0.5rem 1rem;
+      border-radius: 50px;
       cursor: pointer;
       font-size: 0.85rem;
+      border: 1px solid rgba(74, 111, 255, 0.2);
+      transition: var(--transition);
+      white-space: nowrap;
     }
+    
+    .quick-ask span:hover {
+      background-color: rgba(74, 111, 255, 0.15);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+    
+    .quick-ask span:active {
+      transform: translateY(0);
+    }
+    
     #upload-section {
-      margin-top: 2rem;
+      background-color: var(--light-bg);
+      border-radius: var(--border-radius);
+      padding: 1.5rem;
+      text-align: center;
+      margin-top: 1.5rem;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      border-top: 3px solid var(--secondary);
     }
-    .reference {
-      font-size: 0.85rem;
-      margin-top: 1rem;
-      color: #999;
+    
+    #upload-section label {
+      display: block;
+      margin-bottom: 1rem;
+      font-weight: 500;
     }
-    .reference-toggle {
-      margin-top: 1rem;
-      text-align: right;
+    
+    .file-input-container {
+      position: relative;
+      overflow: hidden;
+      display: inline-block;
     }
-    .reference-toggle button {
-      background: none;
-      color: #80d8ff;
-      border: none;
+    
+    .file-input-button {
+      padding: 0.8rem 1.5rem;
+      background: linear-gradient(135deg, var(--secondary), var(--accent));
+      color: white;
+      border-radius: var(--border-radius);
       cursor: pointer;
-      font-size: 0.85rem;
+      display: inline-block;
+      font-weight: 500;
+      transition: var(--transition);
+      box-shadow: 0 4px 12px rgba(108, 99, 255, 0.3);
     }
+    
+    .file-input-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 15px rgba(108, 99, 255, 0.4);
+    }
+    
+    .file-input-container input[type="file"] {
+      font-size: 100px;
+      position: absolute;
+      left: 0;
+      top: 0;
+      opacity: 0;
+      cursor: pointer;
+    }
+    
+    .contributor-section {
+      background-color: var(--light-bg);
+      padding: 1.5rem;
+      border-radius: var(--border-radius);
+      text-align: center;
+      margin-top: 2rem;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+    
+    .contributor-section p {
+      margin: 0 0 1rem;
+      color: #ccc;
+    }
+    
+    .github-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.8rem 1.5rem;
+      background: linear-gradient(135deg, #6e5494, #4078c0);
+      color: white;
+      border-radius: var(--border-radius);
+      text-decoration: none;
+      font-weight: 600;
+      transition: var(--transition);
+      box-shadow: 0 4px 12px rgba(96, 84, 148, 0.3);
+    }
+    
+    .github-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 15px rgba(96, 84, 148, 0.4);
+    }
+    
+    .github-button:active {
+      transform: translateY(1px);
+    }
+    
     footer {
       text-align: center;
       font-size: 0.9rem;
       color: #777;
-      margin-top: 2rem;
+      padding: 2rem;
+      background-color: var(--darker);
+      margin-top: 3rem;
+    }
+    
+    /* Toast notification */
+    .toast {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background-color: var(--light-bg);
+      color: white;
+      padding: 1rem 1.5rem;
+      border-radius: var(--border-radius);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      z-index: 1000;
+      transform: translateY(150%);
+      opacity: 0;
+      transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+    
+    .toast .success {
+      color: #4caf50;
+    }
+    
+    .toast .icon {
+      font-size: 1.5rem;
+    }
+    
+    /* Additional animation classes */
+    .slide-in-right {
+      animation: slideInRight 0.5s forwards;
+    }
+    
+    @keyframes slideInRight {
+      from {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+    
+    .fade-in-up {
+      animation: fadeInUp 0.5s forwards;
+    }
+    
+    @keyframes fadeInUp {
+      from {
+        transform: translateY(20px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+    
+    /* Scrollbar styling */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    
+    ::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 10px;
+    }
+    
+    ::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+    }
+    
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 255, 255, 0.2);
     }
   </style>
 </head>
 <body>
-  <header>Ask iBPS Helper</header>
-  <div class="copyright">&copy; 2024 Ruel McNeil. All rights reserved.</div>
-  <div class="container">
-    <div class="description">
-      This bot is your personal assistant for navigating Newgen's iBPS platform.
+  <header>
+    <h1 class="logo animate__animated animate__fadeIn">Ask iBPS Helper</h1>
+    <div class="copyright animate__animated animate__fadeIn">&copy; 2024 Ruel McNeil. All rights reserved.</div>
+  </header>
+
+  <main>
+    <div class="description animate__animated animate__fadeIn">
+      <p>This intelligent assistant is your personal guide for navigating Newgen's iBPS platform.
       It answers questions about business process modeling, rights management,
-      form building, BAM, Process Client usage, theme customization, OmniApp, and more.
+      form building, BAM, Process Client usage, theme customization, OmniApp, and more.</p>
     </div>
-    <div class="chat-box" id="chat-box"></div>
-    <div class="input-container">
-      <input type="text" id="user-input" placeholder="Ask a question about iBPS...">
-      <button onclick="askBot()">Ask</button>
+    
+    <div class="chat-container animate__animated animate__fadeIn">
+      <div class="chat-box" id="chat-box"></div>
+      
+      <div class="reference fade-in-up" id="reference-list">
+        <strong><i class="fas fa-books"></i> Knowledge Base</strong>
+        <ul id="doc-list">
+          <li>Rights Management</li>
+          <li>Designing Process</li>
+          <li>Interface of Process Modeler</li>
+          <li>Types of Worksteps</li>
+          <li>Process Client Overview & Features</li>
+          <li>Web Process Client WorkDesk</li>
+          <li>Working With Web Process Client</li>
+          <li>Managing a Process</li>
+          <li>iBPS Quick Reference Guide</li>
+          <li>Business Activity Monitor</li>
+          <li>OmniRules Overview + Usage</li>
+          <li>OmniApp</li>
+          <li>Custom Theme Requirements</li>
+          <li>API Hook Implementation</li>
+        </ul>
+      </div>
     </div>
-    <div class="quick-ask">
-      <span onclick="quickAsk('What is iBPS?')">What is iBPS?</span>
-      <span onclick="quickAsk('How do I assign roles in iBPS?')">Assign roles</span>
-      <span onclick="quickAsk('How to use Process Modeler?')">Use Process Modeler</span>
-      <span onclick="quickAsk('What are worksteps in iBPS?')">Worksteps?</span>
-      <span onclick="quickAsk('How to create a form in iForm Builder?')">Create a Form</span>
+    
+    <div class="controls fade-in-up">
+      <div class="mode-selector">
+        <label for="mode-select"><i class="fas fa-sliders-h"></i> Response Mode:</label>
+        <select id="mode-select">
+          <option value="advanced">Advanced</option>
+          <option value="simple">Simple</option>
+        </select>
+      </div>
+      
+      <div class="input-container">
+        <input type="text" id="user-input" placeholder="Ask a question about iBPS..." aria-label="Ask a question about iBPS">
+        <button onclick="askBot()">
+          <i class="fas fa-paper-plane"></i>
+          <span>Ask</span>
+        </button>
+      </div>
+      
+      <div class="quick-ask">
+        <span onclick="quickAsk('What is iBPS?')">What is iBPS?</span>
+        <span onclick="quickAsk('How do I assign roles in iBPS?')">Assign roles</span>
+        <span onclick="quickAsk('How to use Process Modeler?')">Use Process Modeler</span>
+        <span onclick="quickAsk('What are worksteps in iBPS?')">Worksteps?</span>
+        <span onclick="quickAsk('How to create a form in iForm Builder?')">Create a Form</span>
+      </div>
     </div>
-    <div id="upload-section">
-      <label for="pdf-upload">Upload new reference PDF:</label>
-      <input type="file" id="pdf-upload" accept="application/pdf">
+    
+    <div id="upload-section" class="fade-in-up">
+      <label for="pdf-upload"><i class="fas fa-file-pdf"></i> Upload new reference PDF:</label>
+      <div class="file-input-container">
+        <div class="file-input-button">
+          <i class="fas fa-upload"></i> Choose File
+        </div>
+        <input type="file" id="pdf-upload" accept="application/pdf">
+      </div>
     </div>
-    <div class="reference-toggle">
-      <button onclick="toggleReferenceList()">Toggle Reference List</button>
+    
+    <div class="contributor-section fade-in-up">
+      <p>Want to contribute or improve this project?</p>
+      <a href="https://github.com/ruelmcneil/ibpshelper.git" target="_blank" class="github-button">
+        <i class="fab fa-github"></i> Contribute on GitHub
+      </a>
     </div>
-    <div class="reference" id="reference-list">
-      <strong>Based on:</strong>
-      <ul id="doc-list">
-        <li>Rights Management</li>
-        <li>Designing Process</li>
-        <li>Interface of Process Modeler</li>
-        <li>Types of Worksteps</li>
-        <li>Process Client Overview & Features</li>
-        <li>Web Process Client WorkDesk</li>
-        <li>Working With Web Process Client</li>
-        <li>Managing a Process</li>
-        <li>iBPS Quick Reference Guide</li>
-        <li>Business Activity Monitor</li>
-        <li>OmniRules Overview + Usage</li>
-        <li>OmniApp</li>
-        <li>Custom Theme Requirements</li>
-        <li>API Hook Implementation</li>
-      </ul>
-    </div>
+  </main>
+  
+  <div id="toast" class="toast">
+    <div class="icon success"><i class="fas fa-check-circle"></i></div>
+    <div class="message">PDF uploaded successfully!</div>
   </div>
+  
   <footer>
-    Powered by Gemini 1.5 Flash
+    iBPS Helper v2.0 | Powered by AI & Community Knowledge
   </footer>
 
   <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Add initial greeting message
+      setTimeout(() => {
+        addBotMessage("👋 Hello! I'm your iBPS Helper. How can I assist you with Newgen's iBPS platform today?");
+      }, 500);
+    });
+  
     const input = document.getElementById('user-input');
     const chatBox = document.getElementById('chat-box');
     const docList = document.getElementById('doc-list');
-    const refList = document.getElementById('reference-list');
+    const toast = document.getElementById('toast');
 
     input.addEventListener("keypress", function(event) {
       if (event.key === "Enter") {
@@ -180,56 +657,141 @@
       input.value = text;
       askBot();
     }
-
-    function toggleReferenceList() {
-      refList.style.display = refList.style.display === 'none' ? 'block' : 'none';
+    
+    function showToast(message, isSuccess = true) {
+      const toastIcon = toast.querySelector('.icon');
+      const toastMessage = toast.querySelector('.message');
+      
+      toastIcon.className = isSuccess ? 'icon success' : 'icon error';
+      toastIcon.innerHTML = isSuccess ? '<i class="fas fa-check-circle"></i>' : '<i class="fas fa-exclamation-circle"></i>';
+      toastMessage.textContent = message;
+      
+      toast.classList.add('show');
+      
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 3000);
     }
 
     document.getElementById('pdf-upload').addEventListener('change', function(event) {
       const file = event.target.files[0];
       if (file && file.name.endsWith('.pdf')) {
         const fileName = file.name.replace(/\.pdf$/, '').replace(/_/g, ' ');
+        
+        // Add with animation
         const newEntry = document.createElement('li');
         newEntry.textContent = fileName;
+        newEntry.style.opacity = '0';
+        newEntry.style.transform = 'translateX(10px)';
         docList.appendChild(newEntry);
-        alert(`PDF "${fileName}" uploaded for reference. This update is UI-only.`);
+        
+        // Trigger reflow
+        newEntry.offsetHeight;
+        
+        // Apply transition
+        newEntry.style.opacity = '1';
+        newEntry.style.transform = 'translateX(0)';
+        
+        showToast(`PDF "${fileName}" uploaded for reference!`);
       }
     });
+    
+    function addUserMessage(text) {
+      const messageDiv = document.createElement('div');
+      messageDiv.className = 'chat-entry user animate__animated animate__fadeInRight';
+      messageDiv.innerHTML = `<strong>You:</strong> ${text}`;
+      chatBox.appendChild(messageDiv);
+      chatBox.scrollTop = chatBox.scrollHeight;
+      return messageDiv;
+    }
+    
+    function addBotMessage(text) {
+      const messageDiv = document.createElement('div');
+      messageDiv.className = 'chat-entry bot animate__animated animate__fadeInLeft';
+      
+      const formattedText = text
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\n{2,}/g, '</p><p>')
+        .replace(/\n/g, ' ');
+      
+      messageDiv.innerHTML = `<strong>iBPS Bot:</strong> <p>${formattedText}</p>`;
+      chatBox.appendChild(messageDiv);
+      chatBox.scrollTop = chatBox.scrollHeight;
+      return messageDiv;
+    }
+    
+    function addTypingIndicator() {
+      const typingDiv = document.createElement('div');
+      typingDiv.className = 'chat-entry bot typing animate__animated animate__fadeIn';
+      typingDiv.innerHTML = '<span class="typing-animation">iBPS Bot is thinking...</span>';
+      chatBox.appendChild(typingDiv);
+      chatBox.scrollTop = chatBox.scrollHeight;
+      return typingDiv;
+    }
 
     async function askBot() {
       const userText = input.value.trim();
       if (!userText) return;
 
-      chatBox.innerHTML += `<div class='chat-entry user'><strong>You:</strong> ${userText}</div>`;
+      // Add user message with animation
+      addUserMessage(userText);
       input.value = '';
-      chatBox.scrollTop = chatBox.scrollHeight;
+      
+      // Show typing indicator
+      const typingIndicator = addTypingIndicator();
+      
+      try {
+        const response = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=AIzaSyBctCq-ZfrWo7G6SAAc8t89rIr8Z0iNfjk", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            contents: [{ 
+              role: "user", 
+              parts: [{ 
+                text: `${document.getElementById('mode-select').value === 'simple' ? 'Answer briefly in one or two sentences.' : 'Answer in detailed paragraphs using documentation context.'} Question: ${userText}` 
+              }] 
+            }]
+          })
+        });
 
-      const typingMsg = document.createElement('div');
-      typingMsg.className = 'chat-entry bot typing';
-      typingMsg.textContent = 'iBPS Bot is typing...';
-      chatBox.appendChild(typingMsg);
-      chatBox.scrollTop = chatBox.scrollHeight;
-
-      const response = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=AIzaSyBctCq-ZfrWo7G6SAAc8t89rIr8Z0iNfjk", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          contents: [{ role: "user", parts: [{ text: `Answer as the iBPS documentation bot. Question: ${userText}` }] }]
-        })
-      });
-
-      const data = await response.json();
-      typingMsg.remove();
-      let botReply = data.candidates?.[0]?.content?.parts?.[0]?.text || 'Sorry, I could not understand that.';
-
-      botReply = botReply
-        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-        .replace(/\n{2,}/g, '</p><p>')
-        .replace(/\n/g, ' ');
-
-      chatBox.innerHTML += `<div class='chat-entry bot'><strong>iBPS Bot:</strong> <p>${botReply}</p></div>`;
-      chatBox.scrollTop = chatBox.scrollHeight;
+        const data = await response.json();
+        typingIndicator.remove();
+        
+        let botReply = data.candidates?.[0]?.content?.parts?.[0]?.text || 'Sorry, I could not understand that.';
+        
+        // Add bot message with animation
+        addBotMessage(botReply);
+        
+      } catch (error) {
+        typingIndicator.remove();
+        addBotMessage("I'm sorry, I encountered an error while processing your request. Please try again later.");
+        console.error("Error:", error);
+      }
     }
+    
+    // Add subtle hover effect to the document list items
+    document.querySelectorAll('#doc-list li').forEach(item => {
+      item.addEventListener('mouseenter', () => {
+        item.style.color = 'var(--accent-light)';
+        item.style.transform = 'translateX(3px)';
+      });
+      
+      item.addEventListener('mouseleave', () => {
+        item.style.color = '';
+        item.style.transform = '';
+      });
+    });
+    
+    // Add button click effect
+    document.querySelectorAll('button').forEach(button => {
+      button.addEventListener('mousedown', () => {
+        button.style.transform = 'scale(0.95)';
+      });
+      
+      button.addEventListener('mouseup', () => {
+        button.style.transform = '';
+      });
+    });
   </script>
 </body>
 </html>
