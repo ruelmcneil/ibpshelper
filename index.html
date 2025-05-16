@@ -103,6 +103,25 @@
       box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
       font-size: 1rem;
       line-height: 1.6;
+      position: relative; /* Added for positioning the toggle */
+    }
+
+    .description.hidden {
+      display: none; /* Class to hide the description */
+    }
+
+    .description-toggle {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      cursor: pointer;
+      color: var(--light-text);
+      font-size: 1.2rem;
+      transition: transform 0.3s ease;
+    }
+
+    .description-toggle.rotated {
+      transform: rotate(180deg); /* Rotate arrow when hidden */
     }
     
     .chat-container {
@@ -550,7 +569,12 @@
   </header>
 
   <main>
-    <div class="description animate__animated animate__fadeIn">
+<div style="text-align: center; margin-bottom: 1rem;">
+  <button id="toggle-description" style="padding: 0.6rem 1.2rem; border-radius: 8px; background-color: var(--primary); color: white; border: none; cursor: pointer;">
+    Toggle Description
+  </button>
+</div>
+    <div id="description-box" class="description animate__animated animate__fadeIn">
       <p>This intelligent assistant is your personal guide for navigating Newgen's iBPS platform.
       It answers questions about business process modeling, rights management,
       form building, BAM, Process Client usage, theme customization, OmniApp, and more.</p>
@@ -793,5 +817,18 @@
       });
     });
   </script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const descBox = document.getElementById('description-box');
+    const toggleBtn = document.getElementById('toggle-description');
+
+    toggleBtn.addEventListener('click', () => {
+      const isHidden = descBox.classList.toggle('hidden');
+      toggleBtn.textContent = isHidden ? 'Show Description' : 'Hide Description';
+    });
+  });
+</script>
+
 </body>
 </html>
