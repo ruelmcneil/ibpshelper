@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ask iBPS Helper</title>
+  <style>
+    body {
+      background-color: #121212;
+      color: #f0f0f0;
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background-color: #1e1e1e;
+      padding: 1rem;
+      text-align: center;
+      font-size: 1.8rem;
+      font-weight: bold;
+      color: #80d8ff;
+    }
+    .copyright {
+      text-align: center;
+      color: #aaa;
+      font-size: 0.9rem;
+      margin-top: 0.25rem;
+    }
+    .container {
+      max-width: 800px;
+      margin: 2rem auto;
+      padding: 1rem;
+    }
+    .description {
+      font-size: 1rem;
+      color: #ccc;
+      margin-bottom: 1rem;
+    }
+    .chat-box {
+      background-color: #1e1e1e;
+      border-radius: 8px;
+      padding: 1rem;
+      height: 400px;
+      overflow-y: auto;
+      margin-bottom: 1rem;
+    }
+    .chat-entry {
+      margin: 0.5rem 0;
+    }
+    .chat-entry.user { color: #80cbc4; }
+    .chat-entry.bot { color: #b39ddb; }
+    .typing { color: #888; font-style: italic; }
+    .input-container {
+      display: flex;
+      gap: 0.5rem;
+    }
+    .input-container input {
+      flex-grow: 1;
+      padding: 0.5rem;
+      border: none;
+      border-radius: 4px;
+      background-color: #2e2e2e;
+      color: white;
+    }
+    .input-container button {
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 4px;
+      background-color: #80d8ff;
+      color: black;
+      cursor: pointer;
+    }
+    .quick-ask {
+      margin-top: 1rem;
+    }
+    .quick-ask span {
+      display: inline-block;
+      background-color: #2e2e2e;
+      color: #80d8ff;
+      padding: 0.3rem 0.6rem;
+      margin: 0.2rem;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.85rem;
+    }
+    #upload-section {
+      margin-top: 2rem;
+    }
+    .reference {
+      font-size: 0.85rem;
+      margin-top: 1rem;
+      color: #999;
+    }
+    .reference-toggle {
+      margin-top: 1rem;
+      text-align: right;
+    }
+    .reference-toggle button {
+      background: none;
+      color: #80d8ff;
+      border: none;
+      cursor: pointer;
+      font-size: 0.85rem;
+    }
+    footer {
+      text-align: center;
+      font-size: 0.9rem;
+      color: #777;
+      margin-top: 2rem;
+    }
+  </style>
+</head>
+<body>
+  <header>Ask iBPS Helper</header>
+  <div class="copyright">&copy; 2024 Ruel McNeil. All rights reserved.</div>
+  <div class="container">
+    <div class="description">
+      This bot is your personal assistant for navigating Newgen's iBPS platform.
+      It answers questions about business process modeling, rights management,
+      form building, BAM, Process Client usage, theme customization, OmniApp, and more.
+    </div>
+    <div class="chat-box" id="chat-box"></div>
+    <div class="input-container">
+      <input type="text" id="user-input" placeholder="Ask a question about iBPS...">
+      <button onclick="askBot()">Ask</button>
+    </div>
+    <div class="quick-ask">
+      <span onclick="quickAsk('What is iBPS?')">What is iBPS?</span>
+      <span onclick="quickAsk('How do I assign roles in iBPS?')">Assign roles</span>
+      <span onclick="quickAsk('How to use Process Modeler?')">Use Process Modeler</span>
+      <span onclick="quickAsk('What are worksteps in iBPS?')">Worksteps?</span>
+      <span onclick="quickAsk('How to create a form in iForm Builder?')">Create a Form</span>
+    </div>
+    <div id="upload-section">
+      <label for="pdf-upload">Upload new reference PDF:</label>
+      <input type="file" id="pdf-upload" accept="application/pdf">
+    </div>
+    <div class="reference-toggle">
+      <button onclick="toggleReferenceList()">Toggle Reference List</button>
+    </div>
+    <div class="reference" id="reference-list">
+      <strong>Based on:</strong>
+      <ul id="doc-list">
+        <li>Rights Management</li>
+        <li>Designing Process</li>
+        <li>Interface of Process Modeler</li>
+        <li>Types of Worksteps</li>
+        <li>Process Client Overview & Features</li>
+        <li>Web Process Client WorkDesk</li>
+        <li>Working With Web Process Client</li>
+        <li>Managing a Process</li>
+        <li>iBPS Quick Reference Guide</li>
+        <li>Business Activity Monitor</li>
+        <li>OmniRules Overview + Usage</li>
+        <li>OmniApp</li>
+        <li>Custom Theme Requirements</li>
+        <li>API Hook Implementation</li>
+      </ul>
+    </div>
+  </div>
+  <footer>
+    Powered by Gemini 1.5 Flash
+  </footer>
+
+  <script>
+    const input = document.getElementById('user-input');
+    const chatBox = document.getElementById('chat-box');
+    const docList = document.getElementById('doc-list');
+    const refList = document.getElementById('reference-list');
+
+    input.addEventListener("keypress", function(event) {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        askBot();
+      }
+    });
+
+    function quickAsk(text) {
+      input.value = text;
+      askBot();
+    }
+
+    function toggleReferenceList() {
+      refList.style.display = refList.style.display === 'none' ? 'block' : 'none';
+    }
+
+    document.getElementById('pdf-upload').addEventListener('change', function(event) {
+      const file = event.target.files[0];
+      if (file && file.name.endsWith('.pdf')) {
+        const fileName = file.name.replace(/\.pdf$/, '').replace(/_/g, ' ');
+        const newEntry = document.createElement('li');
+        newEntry.textContent = fileName;
+        docList.appendChild(newEntry);
+        alert(`PDF "${fileName}" uploaded for reference. This update is UI-only.`);
+      }
+    });
+
+    async function askBot() {
+      const userText = input.value.trim();
+      if (!userText) return;
+
+      chatBox.innerHTML += `<div class='chat-entry user'><strong>You:</strong> ${userText}</div>`;
+      input.value = '';
+      chatBox.scrollTop = chatBox.scrollHeight;
+
+      const typingMsg = document.createElement('div');
+      typingMsg.className = 'chat-entry bot typing';
+      typingMsg.textContent = 'iBPS Bot is typing...';
+      chatBox.appendChild(typingMsg);
+      chatBox.scrollTop = chatBox.scrollHeight;
+
+      const response = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=AIzaSyBctCq-ZfrWo7G6SAAc8t89rIr8Z0iNfjk", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          contents: [{ role: "user", parts: [{ text: `Answer as the iBPS documentation bot. Question: ${userText}` }] }]
+        })
+      });
+
+      const data = await response.json();
+      typingMsg.remove();
+      const botReply = data.candidates?.[0]?.content?.parts?.[0]?.text || 'Sorry, I could not understand that.';
+      chatBox.innerHTML += `<div class='chat-entry bot'><strong>iBPS Bot:</strong> ${botReply}</div>`;
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+  </script>
+</body>
+</html>
