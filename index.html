@@ -38,48 +38,12 @@
     }
     
     header {
-      background: linear-gradient(135deg, var(--primary), var(--secondary));
-      padding: 1.5rem;
-      text-align: center;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-      position: relative;
-      overflow: hidden;
-    }
-    
-    header::before {
-      content: '';
-      position: absolute;
-      top: -50%;
-      left: -50%;
-      width: 200%;
-      height: 200%;
-      background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
-      animation: pulse 15s infinite;
-    }
-    
-    @keyframes pulse {
-      0% { transform: translate(0, 0) scale(1); opacity: 0.5; }
-      50% { transform: translate(10%, 10%) scale(1.1); opacity: 0.7; }
-      100% { transform: translate(0, 0) scale(1); opacity: 0.5; }
-    }
-    
-    .logo {
-      font-size: 2.2rem;
-      font-weight: bold;
-      color: white;
-      margin: 0;
-      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-      position: relative;
-      z-index: 1;
-    }
-    
-    .copyright {
-      text-align: center;
-      color: rgba(255, 255, 255, 0.8);
-      font-size: 0.9rem;
-      margin-top: 0.5rem;
-      position: relative;
-      z-index: 1;
+      background: transparent;
+      box-shadow: none;
+      padding: 1rem 2rem; /* Adjusted padding */
+      display: flex; /* Added flexbox */
+      align-items: center; /* Added flexbox */
+      justify-content: flex-start; /* Added flexbox */
     }
     
     main {
@@ -89,13 +53,13 @@
       max-width: 1200px;
       width: 100%;
       margin: 0 auto;
-      padding: 2rem 1rem;
+      padding: 0 1rem 0.5rem;
     }
     
     .description {
       text-align: center;
       max-width: 800px;
-      margin: 0 auto 2rem;
+      margin: 190px auto 2rem; /* Added top margin */
       padding: 1.5rem;
       background-color: var(--light-bg);
       border-radius: var(--border-radius);
@@ -434,42 +398,29 @@
     }
     
     .contributor-section {
-      background-color: var(--light-bg);
-      padding: 1.5rem;
-      border-radius: var(--border-radius);
-      text-align: center;
-      margin-top: 2rem;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-    }
-    
-    .contributor-section p {
-      margin: 0 0 1rem;
-      color: #ccc;
-    }
-    
-    .github-button {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 0.8rem 1.5rem;
-      background: linear-gradient(135deg, #6e5494, #4078c0);
-      color: white;
-      border-radius: var(--border-radius);
-      text-decoration: none;
-      font-weight: 600;
-      transition: var(--transition);
-      box-shadow: 0 4px 12px rgba(96, 84, 148, 0.3);
-    }
-    
-    .github-button:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 15px rgba(96, 84, 148, 0.4);
-    }
-    
-    .github-button:active {
-      transform: translateY(1px);
-    }
-    
+  background-color: var(--light-bg);
+  padding: 0.8rem 1rem;
+  border-radius: var(--border-radius);
+  text-align: center;
+  margin-top: 1rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+  font-size: 0.85rem;
+}
+.contributor-section p {
+  margin: 0 0 0.5rem;
+  color: #aaa;
+  font-size: 0.85rem;
+}
+.github-button {
+  padding: 0.5rem 1rem;
+  font-size: 0.85rem;
+  border-radius: 8px;
+  gap: 0.4rem;
+}
+.github-button i {
+  font-size: 0.9rem;
+}
+
     footer {
       text-align: center;
       font-size: 0.9rem;
@@ -563,23 +514,11 @@
   </style>
 </head>
 <body>
-  <header>
-    <h1 class="logo animate__animated animate__fadeIn">Ask iBPS Helper</h1>
-    <div class="copyright animate__animated animate__fadeIn">&copy; 2024 Ruel McNeil. All rights reserved.</div>
-  </header>
 
   <main>
-<div style="text-align: center; margin-bottom: 1rem;">
-  <button id="toggle-description" style="padding: 0.6rem 1.2rem; border-radius: 8px; background-color: var(--primary); color: white; border: none; cursor: pointer;">
-    Toggle Description
-  </button>
+<div style="position: absolute; top: 10px; left: 10px; z-index: 10;">
+  <img src="logo.png" alt="Ask iBPS Helper Logo" style="max-height: 350px; width: auto;" />
 </div>
-    <div id="description-box" class="description animate__animated animate__fadeIn">
-      <p>This intelligent assistant is your personal guide for navigating Newgen's iBPS platform.
-      It answers questions about business process modeling, rights management,
-      form building, BAM, Process Client usage, theme customization, OmniApp, and more.</p>
-    </div>
-    
     <div class="chat-container animate__animated animate__fadeIn">
       <div class="chat-box" id="chat-box"></div>
       
@@ -613,32 +552,34 @@
         </select>
       </div>
       
-      <div class="input-container">
-        <input type="text" id="user-input" placeholder="Ask a question about iBPS..." aria-label="Ask a question about iBPS">
-        <button onclick="askBot()">
-          <i class="fas fa-paper-plane"></i>
-          <span>Ask</span>
-        </button>
-      </div>
-      
-      <div class="quick-ask">
-        <span onclick="quickAsk('What is iBPS?')">What is iBPS?</span>
-        <span onclick="quickAsk('How do I assign roles in iBPS?')">Assign roles</span>
-        <span onclick="quickAsk('How to use Process Modeler?')">Use Process Modeler</span>
-        <span onclick="quickAsk('What are worksteps in iBPS?')">Worksteps?</span>
-        <span onclick="quickAsk('How to create a form in iForm Builder?')">Create a Form</span>
-      </div>
+<div class="quick-ask">
+  <span onclick="quickAsk('What is iBPS?')">What is iBPS?</span>
+  <span onclick="quickAsk('What is Process Designer in iBPS?')">What is Process Designer?</span>
+
+  <span onclick="quickAsk('How to create a form in iForm Builder?')">Create a form</span>
+  <span onclick="quickAsk('What is BAM in iBPS?')">What is BAM?</span>
+  <span onclick="quickAsk('How are roles used in iBPS?')">Roles in iBPS</span>
+  <span onclick="quickAsk('How do I test my workflow in iBPS?')">Test workflow</span>
+  <span onclick="quickAsk('What are hooks in iBPS?')">iBPS Hooks</span>
+</div>
+
+<div class="input-container" style="position: relative;">
+  <input type="text" id="user-input" placeholder="Ask a question about iBPS..." aria-label="Ask a question about iBPS">
+  
+  <!-- Upload icon -->
+  <label for="pdf-upload" title="Upload PDF" style="position: absolute; right: 140px; top: 50%; transform: translateY(-50%); cursor: pointer;">
+    <i class="fas fa-upload" style="color: var(--primary); font-size: 1.2rem;"></i>
+  </label>
+  <input type="file" id="pdf-upload" accept="application/pdf" style="display: none;" />
+
+  <!-- Ask button -->
+  <button onclick="askBot()">
+    <i class="fas fa-paper-plane"></i>
+    <span>Ask</span>
+  </button>
+</div>
     </div>
     
-    <div id="upload-section" class="fade-in-up">
-      <label for="pdf-upload"><i class="fas fa-file-pdf"></i> Upload new reference PDF:</label>
-      <div class="file-input-container">
-        <div class="file-input-button">
-          <i class="fas fa-upload"></i> Choose File
-        </div>
-        <input type="file" id="pdf-upload" accept="application/pdf">
-      </div>
-    </div>
     
     <div class="contributor-section fade-in-up">
       <p>Want to contribute or improve this project?</p>
@@ -661,7 +602,9 @@
     document.addEventListener('DOMContentLoaded', function() {
       // Add initial greeting message
       setTimeout(() => {
-        addBotMessage("👋 Hello! I'm your iBPS Helper. How can I assist you with Newgen's iBPS platform today?");
+        addBotMessage(`👋 Hello! I'm your iBPS Helper. How can I assist you with Newgen's iBPS platform today?
+
+This intelligent assistant is your personal guide for navigating Newgen's iBPS platform. It answers questions about business process modeling, rights management, form building, BAM, Process Client usage, theme customization, OmniApp, and more.`);
       }, 500);
     });
   
@@ -832,3 +775,4 @@
 
 </body>
 </html>
+
