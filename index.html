@@ -48,7 +48,8 @@
       margin: 0.5rem 0;
     }
     .chat-entry.user { color: #80cbc4; }
-    .chat-entry.bot { color: #b39ddb; }
+    .chat-entry.bot { color: #b39ddb; white-space: pre-wrap; }
+    .chat-entry.bot strong { font-weight: bold; }
     .typing { color: #888; font-style: italic; }
     .input-container {
       display: flex;
@@ -219,8 +220,14 @@
 
       const data = await response.json();
       typingMsg.remove();
-      const botReply = data.candidates?.[0]?.content?.parts?.[0]?.text || 'Sorry, I could not understand that.';
-      chatBox.innerHTML += `<div class='chat-entry bot'><strong>iBPS Bot:</strong> ${botReply}</div>`;
+      let botReply = data.candidates?.[0]?.content?.parts?.[0]?.text || 'Sorry, I could not understand that.';
+
+      botReply = botReply
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\n{2,}/g, '</p><p>')
+        .replace(/\n/g, ' ');
+
+      chatBox.innerHTML += `<div class='chat-entry bot'><strong>iBPS Bot:</strong> <p>${botReply}</p></div>`;
       chatBox.scrollTop = chatBox.scrollHeight;
     }
   </script>
